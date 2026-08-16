@@ -40,34 +40,34 @@ def structure_text(raw_text: str) -> list[Product]:
     """Send raw text to Gemini, get back a list of validated Product objects."""
     prompt = EXTRACTION_PROMPT.format(raw_text=raw_text)
 
-    print(f"📤 Sending {len(raw_text)} characters to Gemini...")
+    print(f" Sending {len(raw_text)} characters to Gemini...")
 
     response = client.models.generate_content(
         model=MODEL_NAME,
         contents=prompt,
     )
 
-    print("📥 Raw response object:", response)
+    print(" Raw response object:", response)
 
     if not response.candidates:
-        print("⚠️ No candidates returned — likely blocked or empty.")
+        print(" No candidates returned — likely blocked or empty.")
         return []
 
     text = response.text
     if not text:
-        print("⚠️ response.text is empty.")
+        print(" response.text is empty.")
         print("Finish reason:", response.candidates[0].finish_reason)
         return []
 
     raw = text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
 
-    print("📄 Cleaned text from Gemini:\n", raw[:500])
+    print(" Cleaned text from Gemini:\n", raw[:500])
 
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as e:
-        print("⚠️ Could not parse Gemini's response as JSON:")
+        print(" Could not parse Gemini's response as JSON:")
         print(raw)
         raise e
 
@@ -98,11 +98,11 @@ if __name__ == "__main__":
         print("Unsupported file type")
         sys.exit(1)
 
-    print(f"🔍 Extracted raw text length: {len(raw)} characters")
+    print(f" Extracted raw text length: {len(raw)} characters")
     print("Preview:", raw[:200])
 
     products = structure_text(raw)
-    print(f"\n✅ Extracted {len(products)} product(s):\n")
+    print(f"\n Extracted {len(products)} product(s):\n")
     for p in products:
         print(p.model_dump_json(indent=2))
 
