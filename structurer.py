@@ -9,6 +9,7 @@ import json
 from google import genai
 from dotenv import load_dotenv
 from schema import Product
+from exporter import export_to_excel
 
 load_dotenv()
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
@@ -104,3 +105,6 @@ if __name__ == "__main__":
     print(f"\n✅ Extracted {len(products)} product(s):\n")
     for p in products:
         print(p.model_dump_json(indent=2))
+
+    if products:
+        export_to_excel(products)
